@@ -3,11 +3,13 @@ const {GENESIS_DATA} = require('./config');
 const cryptoHash = require('./crypto-hash');
 
 class Block {
-  constructor({ timestamp, lastHash, hash, data }) {
+  constructor({ timestamp, lastHash, hash, data, difficulty, nonce }) {
     this.timestamp = timestamp;
     this.lastHash = lastHash;
     this.hash = hash;
     this.data = data;
+    this.difficulty = difficulty;
+    this.nonce = nonce;
   }
 
   static genesis(){

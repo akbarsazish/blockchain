@@ -7,13 +7,17 @@ describe("Testing block code", () => {
     const timestamp = '123456';
     const lastHash = 'foo-hash';
     const hash = "hash";
-    const data = ["abc", "abcd", "love"];
+    const data = ["abc", "abcd", "blockchain"];
+    const difficulty = 1;
+    const nonce = 1;
 
     const block = new Block({
         timestamp,
         lastHash,
         hash,
-        data
+        data,
+        difficulty,
+        nonce
     })
 
     it("has a timestamp, lastHash, hash and data property", ()=>{
@@ -21,6 +25,8 @@ describe("Testing block code", () => {
         expect(block.lastHash).toEqual(lastHash);
         expect(block.hash).toEqual(hash);
         expect(block.data).toEqual(data);
+        expect(block.difficulty).toEqual(difficulty);
+        expect(block.nonce).toEqual(nonce);
     });
 
     describe("genesis()", () => {
@@ -57,8 +63,19 @@ describe("Testing block code", () => {
           });
 
         it("sets the `hash`", () => {
-            expect(minedBlock.hash).toEqual(cryptoHash(minedBlock.timestamp, lastBlock.hash, data));
-        })
+            expect(minedBlock.hash).toEqual(
+                cryptoHash(
+                    minedBlock.timestamp,
+                    minedBlock.difficulty,
+                    minedBlock.nonce,
+                    lastBlock.hash,
+                    data
+                ));
+        });
+
+        it("sets the `difficulty`", () => {
+            expect(minedBlock.hash.substr(0, minedBlock.difficulty)).toEqual("0".repeat(minedBlock.difficulty));
+        });
     });
 })
 

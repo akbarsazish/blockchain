@@ -55,6 +55,10 @@ describe("Testing block code", () => {
         it('sets the `timestamp`', ()=>{
             expect(minedBlock.timestamp).not.toEqual(undefined);
           });
+
+        it("sets the `hash`", () => {
+            expect(minedBlock.hash).toEqual(cryptoHash(minedBlock.timestamp, lastBlock.hash, data));
+        })
     });
 })
 

@@ -4,12 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node index",
+    "dev": "nodemon index"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "hex-to-binary": "^1.0.1",
+    "redis": "^4.6.13"
   }
 }

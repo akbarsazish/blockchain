@@ -1,10 +1,10 @@
 
 const Block = require('./block');
-const {GENESIS_DATA} = require('./config');
+const {GENESIS_DATA, MINE_RATE} = require('./config');
 const cryptoHash = require('./crypto-hash');
 
 describe("Testing block code", () => {
-    const timestamp = '123456';
+    const timestamp = 2000;
     const lastHash = 'foo-hash';
     const hash = "hash";
     const data = ["abc", "abcd", "blockchain"];
@@ -25,8 +25,8 @@ describe("Testing block code", () => {
         expect(block.lastHash).toEqual(lastHash);
         expect(block.hash).toEqual(hash);
         expect(block.data).toEqual(data);
-        expect(block.difficulty).toEqual(difficulty);
         expect(block.nonce).toEqual(nonce);
+        expect(block.difficulty).toEqual(difficulty);
     });
 
     describe("genesis()", () => {
@@ -74,8 +74,35 @@ describe("Testing block code", () => {
         });
 
         it("sets the `difficulty`", () => {
-            expect(minedBlock.hash.substr(0, minedBlock.difficulty)).toEqual("0".repeat(minedBlock.difficulty));
+            expect(cryptoHash(minedBlock.hash).substr(0, minedBlock.difficulty)).toEqual("0".repeat(minedBlock.difficulty));
         });
-    });
+
+        it("adjust the difficulty", () => {
+            const possibleResult = [block.difficulty + 1, block.difficulty - 1];
+            expect(possibleResult.includes(minedBlock.difficulty)).toBe(true);
+        });
+    }); 
+
+    describe("addjustDifficulty()", () => {
+        it("increase difficulty rate to make slow the mining block", () => {
+            expect(Block.adjustDifficulty({
+                originalBlock: block,
+                timestamp: block.timestamp + MINE_RATE - 100,
+            })).toEqual(block.difficulty + 1);
+        });
+        it("decrease difficulty rate to speed up the mining block", () => {
+            expect(Block.adjustDifficulty({
+                originalBlock: block,
+                timestamp: block.timestamp + MINE_RATE + 100,
+            })).toEqual(block.difficulty - 1);
+        });
+
+        it("it has lower limit of 1",() => {
+            block.difficulty = -1;
+            expect(Block.adjustDifficulty({
+                originalBlock: block
+            })).toEqual(1);
+        })
+    })
 })
 

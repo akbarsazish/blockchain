@@ -25,6 +25,23 @@ class Transaction {
         }
     }
 
+    update ({senderWallet, recipient, amount}) {
+        if(this.outputMap[senderWallet.publicKey] < amount) {
+            throw new Error("amount exceeds balance");
+        }
+
+        if(!this.outputMap[recipient]) {
+            this.outputMap[recipient] = amount;
+        }else {
+            this.outputMap[recipient] = this.outputMap[recipient] + amount;
+        }
+
+        this.outputMap[senderWallet.publicKey] = this.outputMap[senderWallet.publicKey] - amount;
+        this.input.amount = senderWallet.balance;
+
+        this.input = this.createInput({senderWallet, outputMap: this.outputMap});
+    }
+
     static validTransaction(transaction) {
         if (!transaction) {
             console.error("Invalid transaction: Transaction object is undefined.");

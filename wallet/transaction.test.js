@@ -2,6 +2,7 @@ const Transaction = require('./transaction');
 const Wallet = require('./index');
 const {verifySignature} = require('./../util');
 
+
 describe("Transaction", () => {
     let transaction, senderWallet, recipient, amount;
     beforeEach(() => {
@@ -53,7 +54,36 @@ describe("Transaction", () => {
             signature: transaction.input.signature
         }))
       })
+   })
 
+   describe("validTransaction()", () => {
+     let erroMock;
+     beforeEach(() => {
+        erroMock = jest.fn();
+         global.console.error = erroMock;
+     })
 
+    describe("when transaction is valid", () => {
+        it("it return true", ()=>{
+            expect(Transaction.validTransaction(transaction)).toBe(true)
+        })
+    })
+
+    describe("when transaction is invalid", () => {
+        describe("transaction outputMap is invalid", () => {
+           it("it return false", ()=>{
+                transaction.outputMap[senderWallet.publicKey] = 900000;
+                expect(Transaction.validTransaction()).toBe(false)
+                expect(erroMock).toHaveBeenCalled()
+           })
+        })
+        describe("transaction input signature is invalid", () => {
+           it("it return false", ()=>{
+                transaction.input.signature =  new Wallet().sign('data');
+                expect(Transaction.validTransaction(transaction)).toBe(false)
+                expect(erroMock).toHaveBeenCalled()
+           })
+        })
+    })
    })
 })

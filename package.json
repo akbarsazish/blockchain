@@ -8,9 +8,7 @@
     "start": "node index",
     "dev": "nodemon index"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
+
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -4,15 +4,15 @@ const {cryptoHash} = require('./../util');
 const Wallet = require('./../wallet');
 const Transaction = require('./../wallet/transaction');
 
-describe("Testing blockchain code", () => {
-    let blockchain, newChain, originalChain, erroMock;
+describe("Blockchain", () => {
+    let blockchain, newChain, originalChain, errorMock;
 
     beforeEach(() => {
         blockchain = new Blockchain();
         newChain = new Blockchain();
         originalChain = blockchain.chain;
-        erroMock = jest.fn();
-        global.console.error = erroMock;
+        errorMock = jest.fn();
+        global.console.error = errorMock;
     })
 
     it ("containe `chain` array instance", () => {
@@ -113,7 +113,7 @@ describe("Testing blockchain code", () => {
             });
 
             it("logs an error", () => {
-                expect(erroMock).toHaveBeenCalled();
+                expect(errorMock).toHaveBeenCalled();
             })
         });
 
@@ -136,7 +136,7 @@ describe("Testing blockchain code", () => {
                 });
 
                 it("logs an error", () => {
-                    expect(erroMock).toHaveBeenCalled();
+                    expect(errorMock).toHaveBeenCalled();
                 })
             });
 
@@ -146,7 +146,6 @@ describe("Testing blockchain code", () => {
                 })
                 
                 it("it replace the chain", () => {
-                    blockchain.replaceChain(newChain.chain);
                     expect(blockchain.chain).toEqual(newChain.chain);
                 });
 
@@ -154,8 +153,16 @@ describe("Testing blockchain code", () => {
                     expect(logMock).toHaveBeenCalled();
                 })
             });
-
         });
+        describe('and the `validateTransactions` flag is true', ()=>{
+            it('calss validTransactionData', ()=>{
+              const validTransactionDataMock = jest.fn();
+              blockchain.validTransactionData = validTransactionDataMock;
+              newChain.addBlock({data: 'foo'});
+              blockchain.replaceChain(newChain.chain, true);
+              expect(validTransactionDataMock).toHaveBeenCalled();
+            })
+          })
     });
 
     describe('validTransactionData()', ()=>{
@@ -230,9 +237,12 @@ describe("Testing blockchain code", () => {
         });
     
         describe('and a block contains multiple identical transactions', ()=>{
-          it('returns false and logs an error', ()=>{
+            it('returns false and logs an error', ()=>{
+              newChain.addBlock({data: [transaction,transaction, rewardTransaction]});
+              expect(blockchain.validTransactionData({chain: newChain.chain})).toBe(false);
+              expect(errorMock).toHaveBeenCalled();
+            });
           });
-        });
       })
   
 })

@@ -9,7 +9,7 @@ const axios = require('axios');
 const path = require('path');
 
 const app = express();
-app.use(express.static('./client/src'));
+app.use(express.static('./client/dist'));
 app.use(express.json());
 
 const blockchain = new Blockchain();
@@ -23,7 +23,7 @@ const transactionMiner = new TransactionMiner({blockchain, transactionPool, wall
 // }, 1000);
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/src/index.html'))
+  res.sendFile(path.join(__dirname, 'client/dist/index.html'))
 })
 
 app.get('/api/blocks', (req, res) => {

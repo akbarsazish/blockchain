@@ -6,8 +6,10 @@ const Wallet = require('./wallet');
 const TransactionMiner = require('./app/transaction-miner');
 const tcpPortUsed = require('tcp-port-used');
 const axios = require('axios');
+const path = require('path');
 
 const app = express();
+app.use(express.static('./client/src'));
 app.use(express.json());
 
 const blockchain = new Blockchain();
@@ -19,6 +21,10 @@ const transactionMiner = new TransactionMiner({blockchain, transactionPool, wall
 // setTimeout(() => {
 //     pubsub.broadcastChain();
 // }, 1000);
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/src/index.html'))
+})
 
 app.get('/api/blocks', (req, res) => {
     res.json(blockchain.chain);

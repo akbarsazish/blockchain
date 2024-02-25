@@ -10,17 +10,27 @@ class App extends Component {
         this.setState({walletInfo: response.data})
     }
 
-    render() { 
-        return (
-            <>
-              <h1> This is th app</h1>
-              <h3> Address: {this.state.walletInfo.address} </h3>
-              <h3> Address: {this.state.walletInfo.balance} </h3>
-              <br />
-              <Blocks />
-            </>
-        );
-    }
+    render(){
+        return <>
+        <div className="wallet">
+          <div>
+            <img src="/images/wallet.png" />
+          </div>
+          <div>
+            <h1>YOUR WALLET</h1>
+            <div className="address">
+              <i className="fas fa-key" ></i>
+              Address: {this.state.walletInfo.address}
+            </div>
+            <div className="balance">
+              <i className="fas fa-coins" ></i>
+              Balance: {this.state.walletInfo.balance}
+            </div>
+          </div>
+        </div>
+        <Blocks />
+        </>
+      }
 }
  
 export default App;
